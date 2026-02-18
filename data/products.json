@@ -1,0 +1,142 @@
+[
+  {
+    "_id": "p001",
+    "name": "Wireless Mouse",
+    "description": "Ergonomic wireless mouse with adjustable DPI",
+    "price": 25.99,
+    "quantityInStock": 50
+  },
+  {
+    "_id": "p002",
+    "name": "Mechanical Keyboard",
+    "description": "RGB mechanical keyboard with blue switches",
+    "price": 89.99,
+    "quantityInStock": 30
+  },
+  {
+    "_id": "p003",
+    "name": "USB-C Charger",
+    "description": "65W fast USB-C wall charger",
+    "price": 39.99,
+    "quantityInStock": 40
+  },
+  {
+    "_id": "p004",
+    "name": "Noise Cancelling Headphones",
+    "description": "Over-ear wireless noise cancelling headphones",
+    "price": 199.99,
+    "quantityInStock": 15
+  },
+  {
+    "_id": "p005",
+    "name": "Laptop Stand",
+    "description": "Adjustable aluminum laptop stand for desks",
+    "price": 49.99,
+    "quantityInStock": 25
+  },
+  {
+    "_id": "p006",
+    "name": "Webcam",
+    "description": "1080p HD webcam with built-in microphone",
+    "price": 59.99,
+    "quantityInStock": 35
+  },
+  {
+    "_id": "p007",
+    "name": "Bluetooth Speaker",
+    "description": "Portable Bluetooth speaker with deep bass",
+    "price": 79.99,
+    "quantityInStock": 45
+  },
+  {
+    "_id": "p008",
+    "name": "External Hard Drive",
+    "description": "2TB USB 3.0 external hard drive",
+    "price": 99.99,
+    "quantityInStock": 20
+  },
+  {
+    "_id": "p009",
+    "name": "USB Flash Drive",
+    "description": "128GB USB 3.1 flash drive",
+    "price": 24.99,
+    "quantityInStock": 100
+  },
+  {
+    "_id": "p010",
+    "name": "Smartphone Stand",
+    "description": "Adjustable smartphone stand for desk use",
+    "price": 14.99,
+    "quantityInStock": 60
+  },
+  {
+    "_id": "p011",
+    "name": "Gaming Mouse Pad",
+    "description": "Large anti-slip gaming mouse pad",
+    "price": 19.99,
+    "quantityInStock": 70
+  },
+  {
+    "_id": "p012",
+    "name": "Wireless Earbuds",
+    "description": "True wireless earbuds with charging case",
+    "price": 129.99,
+    "quantityInStock": 25
+  },
+  {
+    "_id": "p013",
+    "name": "HDMI Cable",
+    "description": "6-foot high-speed HDMI cable",
+    "price": 12.99,
+    "quantityInStock": 80
+  },
+  {
+    "_id": "p014",
+    "name": "Monitor",
+    "description": "24-inch Full HD LED monitor",
+    "price": 179.99,
+    "quantityInStock": 18
+  },
+  {
+    "_id": "p015",
+    "name": "Power Bank",
+    "description": "20,000mAh portable power bank",
+    "price": 49.99,
+    "quantityInStock": 40
+  },
+  {
+    "_id": "p016",
+    "name": "Desk Lamp",
+    "description": "LED desk lamp with adjustable brightness",
+    "price": 34.99,
+    "quantityInStock": 55
+  },
+  {
+    "_id": "p017",
+    "name": "Ethernet Cable",
+    "description": "10-foot Cat6 Ethernet cable",
+    "price": 9.99,
+    "quantityInStock": 90
+  },
+  {
+    "_id": "p018",
+    "name": "Wireless Router",
+    "description": "Dual-band Wi-Fi 6 wireless router",
+    "price": 149.99,
+    "quantityInStock": 22
+  },
+  {
+    "_id": "p019",
+    "name": "Surge Protector",
+    "description": "8-outlet surge protector with USB ports",
+    "price": 29.99,
+    "quantityInStock": 48
+  },
+  {
+    "_id": "p020",
+    "name": "Smartwatch",
+    "description": "Fitness smartwatch with heart rate monitor",
+    "price": 199.99,
+    "quantityInStock": 12
+  }
+]

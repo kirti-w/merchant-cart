@@ -1,0 +1,35 @@
+.search-form {
+  margin-bottom: 20px;
+  color: blue;
+}
+
+.search-form input {
+  padding: 6px;
+  width: 250px;
+}
+
+.search-form button {
+  padding: 6px 12px;
+}
+
+.clear-btn {
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.out-of-stock {
+  color: red;
+  font-weight: bold;
+}

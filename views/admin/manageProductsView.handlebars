@@ -1,0 +1,45 @@
+<h2 class="mb-4">Manage Products</h2>
+
+<a href="/admin/products/new" class="btn btn-primary mb-3">
+  Add New Product
+</a>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{#each products}}
+      <tr>
+        <td>{{this._id}}</td>
+        <td>{{this.name}}</td>
+        <td>${{this.price}}</td>
+        <td>{{this.quantityInStock}}</td>
+        <td>
+          <a
+            href="/admin/products/edit/{{this._id}}"
+            class="btn btn-sm btn-warning"
+          >
+            Edit
+          </a>
+
+          <form
+            action="/admin/products/delete/{{this._id}}"
+            method="POST"
+            style="display:inline;"
+          >
+            <button class="btn btn-sm btn-danger">
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

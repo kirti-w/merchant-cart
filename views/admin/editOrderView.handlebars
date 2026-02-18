@@ -1,0 +1,105 @@
+<div class="container mt-4">
+
+  <div class="card shadow">
+
+    <div class="card-header bg-info text-white">
+      <h4 class="mb-0">Edit Order</h4>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Order Info -->
+      <div class="mb-4">
+        <p><strong>Order ID:</strong> {{order._id}}</p>
+        <p><strong>Customer:</strong> {{order.customer.name}} ({{order.customer.email}})</p>
+        <p><strong>Total Amount:</strong> ${{order.totalAmount}}</p>
+        <p><strong>Placed:</strong> {{order.orderDate}}</p>
+      </div>
+
+      <!-- Items -->
+      <h5 class="mb-3">Order Items</h5>
+
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Product</th>
+            <th>Price at Purchase</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+
+       <tbody>
+  {{#each order.items}}
+    <tr>
+      <td>
+        {{this.product.name}}
+        <input type="hidden" name="items[{{@index}}][product]" value="{{this.product._id}}">
+        <input type="hidden" name="items[{{@index}}][priceAtPurchase]" value="{{this.priceAtPurchase}}">
+      </td>
+
+      <td>${{this.priceAtPurchase}}</td>
+
+      <td>
+        <input 
+          type="number" 
+          name="items[{{@index}}][quantity]" 
+          value="{{this.quantity}}" 
+          min="1"
+          class="form-control"
+          {{#unless (eq ../order.status "PLACED")}}disabled{{/unless}}
+        >
+      </td>
+
+      <td>
+        ${{multiply this.priceAtPurchase this.quantity}}
+      </td>
+    </tr>
+  {{/each}}
+</tbody>
+
+      </table>
+
+      <!-- Update Status -->
+      <form method="POST" action="/admin/orders/{{order._id}}">
+        
+        <div class="mb-3">
+          <label class="form-label"><strong>Order Status</strong></label>
+
+          <select name="status" class="form-select">
+
+            <option value="PLACED"
+              {{#if (eq order.status "PLACED")}}selected{{/if}}>
+              PLACED
+            </option>          
+
+            <option value="COMPLETED"
+              {{#if (eq order.status "COMPLETED")}}selected{{/if}}>
+              DELIVERED
+            </option>
+
+            <option value="CANCELLED"
+              {{#if (eq order.status "CANCELLED")}}selected{{/if}}>
+              CANCELLED
+            </option>
+
+          </select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a href="/admin/customers/{{order.customer._id}}/orders"
+             class="btn btn-secondary">
+            Back
+          </a>
+
+          <button type="submit" class="btn btn-success">
+            Update Order
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

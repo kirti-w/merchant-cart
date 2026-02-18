@@ -1,0 +1,41 @@
+[
+  {
+    "_id": "o1001",
+    "customer": "u002",
+    "orderDate": "2026-02-02T14:45:00Z",
+    "items": [
+      {
+        "product": "p001",
+        "quantity": 2,
+        "priceAtPurchase": 25.99
+      },
+      {
+        "product": "p003",
+        "quantity": 1,
+        "priceAtPurchase": 39.99
+      }
+    ],
+    "totalAmount": 91.97,
+    "status": "COMPLETED"
+  },
+
+  {
+    "_id": "o1002",
+    "customer": "u003",
+    "orderDate": "2026-02-03T15:30:00Z",
+    "items": [
+      {
+        "product": "p003",
+        "quantity": 2,
+        "priceAtPurchase": 39.99
+      },
+      {
+        "product": "p004",
+        "quantity": 1,
+        "priceAtPurchase": 199.99
+      }
+    ],
+    "totalAmount": 220,
+    "status": "PLACED"
+  }
+]

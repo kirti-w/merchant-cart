@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "u001",
+    "name": "Admin User",
+    "email": "admin@shop.com",
+    "passwordHash": "$2b$10$AdminPasswordHashHere",
+    "role": "ADMIN",
+    "createdAt": "2026-02-01T10:00:00Z"
+  },
+  {
+    "_id": "u002",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "passwordHash": "$2b$10$CustomerPasswordHashHere",
+    "role": "CUSTOMER",
+    "createdAt": "2026-02-01T11:00:00Z"
+  },
+  {
+    "_id": "u003",
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "passwordHash": "$2b$10$AnotherCustomerPasswordHash",
+    "role": "CUSTOMER",
+    "createdAt": "2026-02-01T11:30:00Z"
+  }
+]
