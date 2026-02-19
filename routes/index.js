@@ -8,7 +8,9 @@ import * as cartDB from "../cartModule.js";
 // GET request to the homepage
 
 router.get("/", function (req, res) {
-  res.render("homeView");
+  res.render("homeView", {
+    user: req.user,
+  });
 });
 
 router.get("/products", async function (req, res) {
@@ -20,6 +22,7 @@ router.get("/products", async function (req, res) {
     searchTerm: searchQuery,
     minPrice,
     maxPrice,
+    isadmin: false,
   });
 
   res.format({

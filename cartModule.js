@@ -8,6 +8,7 @@ export const searchProducts = async ({
   searchTerm = "",
   minPrice = null,
   maxPrice = null,
+  isadmin = false,
 }) => {
   console.log("\nSearch Products:", { searchTerm, minPrice, maxPrice });
 
@@ -34,6 +35,9 @@ export const searchProducts = async ({
     }
   }
 
+  if (!isadmin) {
+    query.isActive = true;
+  }
   const result = await Product.find(query);
 
   return JSON.parse(JSON.stringify(result));
@@ -43,8 +47,11 @@ export const createProduct = async (data) => {
   return Product.create(data);
 };
 
+//Soft delete by setting isActive to false
 export const deleteProduct = async (id) => {
-  return Product.findByIdAndDelete(id);
+  await Product.findByIdAndUpdate(id, {
+    $set: { isActive: false },
+  });
 };
 
 export const findProduct = async (id) => {
@@ -56,7 +63,7 @@ export const updateProduct = async (id, data) => {
 };
 
 export const getUsers = async () => {
-  return User.find({ role: "CUSTOMER" }).lean();
+  return User.find({ role: "customer" }).lean();
 };
 
 export const findUser = async (id) => {

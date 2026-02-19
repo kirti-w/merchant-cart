@@ -4,12 +4,66 @@
   Add New Product
 </a>
 
+<form action="/admin/products" method="GET" class="container mb-4">
+  <div class="row align-items-end g-3 p-3 shadow-sm rounded bg-light">
+
+    <!-- Search -->
+    <div class="col-md-4">
+      <label class="form-label fw-semibold">Search</label>
+      <input
+        type="text"
+        name="search"
+        class="form-control"
+        placeholder="Search products..."
+        value="{{searchQuery}}"
+      />
+    </div>
+
+    <!-- Min Price -->
+    <div class="col-md-2">
+      <label class="form-label fw-semibold">Min Price</label>
+      <input
+        type="number"
+        name="minPrice"
+        class="form-control"
+        value="{{minPrice}}"
+      />
+    </div>
+
+    <!-- Max Price -->
+    <div class="col-md-2">
+      <label class="form-label fw-semibold">Max Price</label>
+      <input
+        type="number"
+        name="maxPrice"
+        class="form-control"
+        value="{{maxPrice}}"
+      />
+    </div>
+
+    <!-- Buttons -->
+    <div class="col-md-4 d-flex gap-2">
+      <button type="submit" class="btn btn-primary px-4">
+        Search
+      </button>
+
+      {{#if searchQuery}}
+        <a href="/admin/products" class="btn btn-outline-secondary">
+          Clear
+        </a>
+      {{/if}}
+    </div>
+
+  </div>
+</form>
+
 <table class="table table-striped">
   <thead>
     <tr>
       <th>Name</th>
       <th>Price</th>
       <th>Stock</th>
+      <th>Is Active</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -20,7 +74,10 @@
         <td>{{this._id}}</td>
         <td>{{this.name}}</td>
         <td>${{this.price}}</td>
+        <td>{{this.isActive}}</td>
+
         <td>{{this.quantityInStock}}</td>
+
         <td>
           <a
             href="/admin/products/edit/{{this._id}}"

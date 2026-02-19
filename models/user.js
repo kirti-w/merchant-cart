@@ -5,10 +5,9 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   _id: String,
   name: String,
-  email: String,
-  passwordHash: String,
+  username: String,
+  password: String,
   role: String, // "ADMIN" or "CUSTOMER"
-  createdAt: Date,
   orders: [
     {
       type: Schema.Types.String,

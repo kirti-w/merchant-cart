@@ -1,3 +1,22 @@
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+
+import { validateUser } from "./userModule.js";
+
+// configure passport strategy
+passport.use(
+  new LocalStrategy(function (username, password, cb) {
+    process.nextTick(async function () {
+      const user = await validateUser(username, password);
+      if (!user) {
+        return cb(null, false, { message: "Incorrect username or password." });
+      } else {
+        return cb(null, user);
+      }
+    });
+  }),
+);
+
 import express from "express";
 
 const app = express();
@@ -40,12 +59,84 @@ app.use(
   }),
 );
 
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Serialize user information
+passport.serializeUser((user, cb) => {
+  console.log("Serialize", user);
+  cb(null, {
+    id: user._id,
+    name: user.name,
+    role: user.role,
+  });
+});
+
+// Deserialize user information
+passport.deserializeUser((obj, cb) => {
+  console.log("DeSerialize", obj);
+  cb(null, obj);
+});
+
+app.get("/login", function (req, res) {
+  res.render("login", {
+    user: req.user,
+    messages: req.session.messages,
+  });
+});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureMessage: true,
+  }),
+);
+
+// protected route middleware function
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+
+app.get("/account", ensureAuthenticated, function (req, res) {
+  res.render("account", { user: req.user });
+});
+
+// protected route middleware function
+const ensureAuthorized = (requiredRole) => {
+  return (req, res, next) => {
+    if (req.isAuthenticated) {
+      const user = req.user;
+      if (user?.role === requiredRole) {
+        return next();
+      } else {
+        res.render("error", {
+          user: req.user,
+          message: "Insufficient access permissions",
+        });
+      }
+    } else {
+      res.redirect("/login");
+    }
+  };
+};
+
 // Routing
 import { router as routes } from "./routes/index.js";
 
 import { router as adminRoutes } from "./routes/admin-routes.js";
 
-app.use("/admin", adminRoutes);
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
+
+app.use("/admin", ensureAuthenticated, ensureAuthorized("admin"), adminRoutes);
 
 app.use("/", routes);
 

@@ -1,18 +1,30 @@
 import express from "express";
 import * as cartDB from "../cartModule.js";
-import { ORDER_STATUS } from "../models/order.js";
 
 const router = express.Router();
 const isAdmin = true;
 
-// Show all products
-router.get("/products", async function (req, res) {
-  /*const searchQuery = req.query.search ? req.query.search : "";
-  let filter = { isActive: true }; */
+router.get("/products", async (req, res) => {
+  try {
+    const { search, minPrice, maxPrice } = req.query;
 
-  let result = await cartDB.searchProducts("");
+    const products = await cartDB.searchProducts({
+      searchTerm: search || "",
+      minPrice: minPrice ? Number(minPrice) : null,
+      maxPrice: maxPrice ? Number(maxPrice) : null,
+      isadmin: true,
+    });
 
-  res.render("admin/manageProductsView", { products: result });
+    res.render("admin/manageProductsView", {
+      products,
+      searchQuery: search,
+      minPrice,
+      maxPrice,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error loading products");
+  }
 });
 
 // Show add product form

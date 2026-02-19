@@ -1,26 +1,30 @@
 [
   {
     "_id": "u001",
-    "name": "Admin User",
-    "email": "admin@shop.com",
-    "passwordHash": "$2b$10$AdminPasswordHashHere",
-    "role": "ADMIN",
-    "createdAt": "2026-02-01T10:00:00Z"
+    "name": "Alice",
+    "username": "alice@shop.com",
+    "password": "1234",
+    "role": "admin"
   },
   {
     "_id": "u002",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "passwordHash": "$2b$10$CustomerPasswordHashHere",
-    "role": "CUSTOMER",
-    "createdAt": "2026-02-01T11:00:00Z"
+    "name": "Bob",
+    "username": "bob@shop.com",
+    "password": "2345",
+    "role": "admin"
   },
   {
     "_id": "u003",
+    "name": "Charlie",
+    "username": "charlie@example.com",
+    "password": "3456",
+    "role": "customer"
+  },
+  {
+    "_id": "u004",
     "name": "Jane Smith",
-    "email": "jane@example.com",
-    "passwordHash": "$2b$10$AnotherCustomerPasswordHash",
-    "role": "CUSTOMER",
-    "createdAt": "2026-02-01T11:30:00Z"
+    "username": "jane@example.com",
+    "password": "3456",
+    "role": "customer"
   }
 ]
