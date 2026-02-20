@@ -1,13 +1,12 @@
 <h1>Your Cart</h1>
 
 {{#if cart.length}}
-  <table class="table table-bordered shadow-sm">
+  <table class="table table-bordered shadow-sm align-middle">
     <thead class="table-dark">
       <tr>
         <th>Product</th>
         <th>Price</th>
-        <th>Quantity</th>
-        <th>Available</th>
+        <th style="width:220px;">Quantity</th>
         <th>Total</th>
       </tr>
     </thead>
@@ -16,8 +15,41 @@
         <tr>
           <td>{{this.name}}</td>
           <td>${{this.price}}</td>
-          <td>{{this.quantity}}</td>
-          <td>{{this.quantityInStock}}</td>
+
+          <td>
+            <div class="d-flex align-items-center">
+
+              <!-- UPDATE FORM -->
+              <form
+                action="/cart/update/{{this.productId}}"
+                method="POST"
+                class="me-2 quantity-form"
+              >
+                <input
+                  type="number"
+                  name="quantity"
+                  value="{{this.quantity}}"
+                  min="1"
+                  class="form-control form-control-sm"
+                  style="width:80px;"
+                  onchange="this.form.submit()"
+                />
+              </form>
+
+              <!-- DELETE BUTTON -->
+              <form
+                action="/cart/delete/{{this.productId}}"
+                method="POST"
+                onsubmit="return confirm('Remove this item?');"
+              >
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+
+            </div>
+          </td>
+
           <td>${{this.itemTotal}}</td>
         </tr>
       {{/each}}

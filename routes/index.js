@@ -167,50 +167,109 @@ router.post(
   },
 );
 
-router.post("/checkout", ensureAuthenticated, async (req, res) => {
-  const cart = req.session.cart;
+router.post(
+  "/cart/update/:id",
+  ensureAuthenticated,
+  ensureAuthorized("customer"),
+  async (req, res) => {
+    const productId = req.params.id;
+    const newQuantity = parseInt(req.body.quantity);
 
-  if (!cart || cart.length === 0) {
-    return res.redirect("/cart");
-  }
+    const product = await cartDB.findProduct(productId);
+    if (!product) return res.redirect("/cart");
 
-  for (const item of cart) {
-    const product = await cartDB.findProduct(item.productId);
-
-    if (!product || product.quantityInStock < item.quantity) {
-      return res.send(`Insufficient stock for ${item.name}`);
+    if (newQuantity > product.quantityInStock) {
+      return res.send("Cannot exceed available stock");
     }
-  }
 
-  for (const item of cart) {
-    await cartDB.updateProductQuantity(item.productId, item.quantity);
-  }
+    let sessionCart = req.session.cart || [];
 
-  //Map cart items to order items format
-  const orderItems = cart.map((item) => ({
-    product: item.productId,
-    quantity: item.quantity,
-    priceAtPurchase: item.price,
-  }));
+    const item = sessionCart.find((i) => i.productId.toString() === productId);
 
-  const totalAmount = orderItems.reduce(
-    (sum, item) => sum + item.quantity * item.priceAtPurchase,
-    0,
-  );
+    if (item) {
+      if (newQuantity <= 0) {
+        // remove if quantity is 0
+        sessionCart = sessionCart.filter(
+          (i) => i.productId.toString() !== productId,
+        );
+      } else {
+        item.quantity = newQuantity;
+      }
+    }
 
-  await Order.create({
-    customer: req.user.id,
-    items: orderItems,
-    orderDate: new Date(),
-    totalAmount,
-    status: "PLACED",
-  });
+    req.session.cart = sessionCart;
+    res.redirect("/cart");
+  },
+);
 
-  // Clear cart
-  req.session.cart = [];
+router.post(
+  "/cart/delete/:id",
+  ensureAuthenticated,
+  ensureAuthorized("customer"),
+  (req, res) => {
+    const productId = req.params.id;
 
-  res.redirect("/orders");
-});
+    let sessionCart = req.session.cart || [];
+
+    sessionCart = sessionCart.filter(
+      (item) => item.productId.toString() !== productId,
+    );
+
+    req.session.cart = sessionCart;
+
+    res.redirect("/cart");
+  },
+);
+
+router.post(
+  "/checkout",
+  ensureAuthenticated,
+  ensureAuthorized("customer"),
+  async (req, res) => {
+    const cart = req.session.cart;
+
+    if (!cart || cart.length === 0) {
+      return res.redirect("/cart");
+    }
+
+    for (const item of cart) {
+      const product = await cartDB.findProduct(item.productId);
+
+      if (!product || product.quantityInStock < item.quantity) {
+        return res.send(`Insufficient stock for ${item.name}`);
+      }
+    }
+
+    for (const item of cart) {
+      await cartDB.updateProductQuantity(item.productId, item.quantity);
+    }
+
+    //Map cart items to order items format
+    const orderItems = cart.map((item) => ({
+      product: item.productId,
+      quantity: item.quantity,
+      priceAtPurchase: item.price,
+    }));
+
+    const totalAmount = orderItems.reduce(
+      (sum, item) => sum + item.quantity * item.priceAtPurchase,
+      0,
+    );
+
+    await Order.create({
+      customer: req.user.id,
+      items: orderItems,
+      orderDate: new Date(),
+      totalAmount,
+      status: "PLACED",
+    });
+
+    // Clear cart
+    req.session.cart = [];
+
+    res.redirect("/orders");
+  },
+);
 
 router.get("/orders", ensureAuthenticated, async (req, res) => {
   const orders = await cartDB.findOrdersByCustId(req.user.id);
