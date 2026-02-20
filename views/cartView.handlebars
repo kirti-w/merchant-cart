@@ -1,0 +1,44 @@
+<h1>Your Cart</h1>
+
+{{#if cart.length}}
+  <table class="table table-bordered shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Available</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each cart}}
+        <tr>
+          <td>{{this.name}}</td>
+          <td>${{this.price}}</td>
+          <td>{{this.quantity}}</td>
+          <td>{{this.quantityInStock}}</td>
+          <td>${{this.itemTotal}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <div class="text-end">
+    <h4>Total: ${{total}}</h4>
+  </div>
+
+  <form action="/checkout" method="POST" class="text-end mt-3">
+    <button class="btn btn-success">
+      Checkout
+    </button>
+  </form>
+
+{{else}}
+  <div class="alert alert-info">
+    Your cart is empty.
+  </div>
+  <a href="/products" class="btn btn-primary">
+    Continue Shopping
+  </a>
+{{/if}}

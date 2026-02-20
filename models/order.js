@@ -7,29 +7,31 @@ const ORDER_STATUS = {
   CANCELLED: "CANCELLED",
 };
 
-const orderSchema = new Schema({
-  _id: String,
-  customer: {
-    type: Schema.Types.String,
-    ref: "User",
-  },
-  items: [
-    {
-      product: {
-        type: Schema.Types.String,
-        ref: "Product",
-        required: true,
-      },
-      quantity: Number,
-      priceAtPurchase: Number,
+const orderSchema = new Schema(
+  {
+    customer: {
+      type: Schema.Types.String,
+      ref: "User",
     },
-  ],
-  totalAmount: Number,
-  status: {
-    type: String,
-    enum: Object.values(ORDER_STATUS),
-    default: ORDER_STATUS.PLACED,
+    items: [
+      {
+        product: {
+          type: Schema.Types.String,
+          ref: "Product",
+          required: true,
+        },
+        quantity: Number,
+        priceAtPurchase: Number,
+      },
+    ],
+    totalAmount: Number,
+    status: {
+      type: String,
+      enum: Object.values(ORDER_STATUS),
+      default: ORDER_STATUS.PLACED,
+    },
   },
-});
+  { versionKey: false },
+);
 export const Order = mongoose.model("Order", orderSchema);
 export { ORDER_STATUS };

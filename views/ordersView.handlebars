@@ -1,0 +1,75 @@
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>My Orders</h3>
+    <a href="/products" class="btn btn-outline-primary">
+      Continue Shopping
+    </a>
+  </div>
+
+  {{#if orders.length}}
+
+    {{#each orders}}
+      <div class="card mb-3 shadow">
+
+        <!-- Card Header -->
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Order ID:</strong> {{this._id}}
+          </div>
+
+          <div>
+            <span class="badge 
+              {{#if (eq this.status "PENDING")}}bg-warning text-dark{{/if}}
+              {{#if (eq this.status "COMPLETED")}}bg-success{{/if}}
+              {{#if (eq this.status "CANCELLED")}}bg-danger{{/if}}">
+              {{this.status}}
+            </span>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+
+          <!-- Items -->
+          <ul class="list-group mb-3">
+            {{#each this.items}}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{this.product.name}}</strong>
+                  <div class="text-muted small">
+                    Qty: {{this.quantity}}
+                  </div>
+                </div>
+
+                <div>
+                  ${{this.product.price}}
+                </div>
+              </li>
+            {{/each}}
+          </ul>
+
+          <!-- Order Summary -->
+          <div class="d-flex justify-content-between">
+            <div>
+              <strong>Placed:</strong> {{this.orderDate}}
+            </div>
+            <div>
+              <strong>Total:</strong> ${{this.totalAmount}}
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    {{/each}}
+
+  {{else}}
+
+    <div class="alert alert-info text-center">
+      You have not placed any orders yet.
+    </div>
+
+  {{/if}}
+
+</div>

@@ -1,10 +1,50 @@
-{{#if messages}}
-  <h3>Error : {{ messages }}</h3>
-{{/if}}
+<div class="container d-flex justify-content-center align-items-center vh-100">
 
-<h3>Login Page</h3>
-<form action="/login" method="post">
-  Username:  <input type="text"     name="username" required><p>
-  Password:  <input type="password" name="password" required><p></p>
-  <button type="submit">Submit</button>
-</form>
+  <div class="card shadow-lg p-4" style="width: 400px; border-radius: 12px;">
+
+    <h3 class="text-center mb-4">Login</h3>
+
+    {{#if messages}}
+      <div class="alert alert-danger text-center">
+        {{messages}}
+      </div>
+    {{/if}}
+
+    <form action="/login" method="post">
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Username</label>
+        <input
+          type="text"
+          name="username"
+          class="form-control"
+          placeholder="Enter username"
+          required
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Password</label>
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          placeholder="Enter password"
+          required
+        />
+      </div>
+
+      <!-- Submit -->
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary btn-lg">
+          Login
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

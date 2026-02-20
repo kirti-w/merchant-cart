@@ -1,6 +1,5 @@
 [
   {
-    "_id": "o1001",
     "customer": "u002",
     "orderDate": "2026-02-02T14:45:00Z",
     "items": [
@@ -20,7 +19,6 @@
   },
 
   {
-    "_id": "o1002",
     "customer": "u003",
     "orderDate": "2026-02-03T15:30:00Z",
     "items": [

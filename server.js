@@ -2,6 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 
 import { validateUser } from "./userModule.js";
+import { ensureAuthenticated, ensureAuthorized } from "./middleware/auth.js";
 
 // configure passport strategy
 passport.use(
@@ -86,29 +87,48 @@ app.get("/login", function (req, res) {
   });
 });
 
-app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureMessage: true,
-  }),
-);
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return res.render("login", {
+        messages: info?.message || "Invalid username or password.",
+      });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (user.role === "admin") {
+        return res.redirect("/admin/products");
+      } else {
+        return res.redirect("/products");
+      }
+    });
+  })(req, res, next);
+});
 
 // protected route middleware function
-function ensureAuthenticated(req, res, next) {
+/*
+export function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");
-}
+}*/
 
 app.get("/account", ensureAuthenticated, function (req, res) {
   res.render("account", { user: req.user });
 });
 
 // protected route middleware function
-const ensureAuthorized = (requiredRole) => {
+/*
+export const ensureAuthorized = (requiredRole) => {
   return (req, res, next) => {
     if (req.isAuthenticated) {
       const user = req.user;
@@ -125,7 +145,7 @@ const ensureAuthorized = (requiredRole) => {
     }
   };
 };
-
+*/
 // Routing
 import { router as routes } from "./routes/index.js";
 
@@ -133,9 +153,12 @@ import { router as adminRoutes } from "./routes/admin-routes.js";
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
+  res.locals.cartCount = req.session.cart?.length || 0;
+  res.locals.currentPath = req.path;
   next();
 });
 
+//Ensure user is authenticated and has admin role for all /admin routes
 app.use("/admin", ensureAuthenticated, ensureAuthorized("admin"), adminRoutes);
 
 app.use("/", routes);

@@ -62,6 +62,16 @@ export const updateProduct = async (id, data) => {
   return Product.findByIdAndUpdate(id, data);
 };
 
+export const updateProductQuantity = async (productId, quantity) => {
+  return Product.findOneAndUpdate(
+    {
+      _id: productId,
+      quantityInStock: { $gte: quantity },
+    },
+    { $inc: { quantityInStock: -quantity } },
+  );
+};
+
 export const getUsers = async () => {
   return User.find({ role: "customer" }).lean();
 };

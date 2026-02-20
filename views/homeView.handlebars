@@ -1,2 +1,64 @@
-<h3>Merchant Cart - Kirti Wadhwani</h3>
-<hr />
+<div class="container mt-5">
+
+  <!-- Hero Section -->
+  <div class="p-5 mb-4 bg-light rounded-3 shadow-sm">
+    <div class="container-fluid py-5 text-center">
+      <h1 class="display-5 fw-bold">Welcome to Merchant Cart</h1>
+      <p class="col-md-8 fs-5 mx-auto">
+        Shop quality products at the best prices. Fast checkout. Secure orders.
+      </p>
+
+      {{#if user}}
+        <a href="/products" class="btn btn-primary btn-lg">
+          Start Shopping
+        </a>
+      {{else}}
+        <a href="/login" class="btn btn-primary btn-lg me-2">
+          Login
+        </a>
+        <a href="/register" class="btn btn-outline-secondary btn-lg">
+          Register
+        </a>
+      {{/if}}
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="row text-center mb-5">
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5>Secure Payments</h5>
+        <p class="text-muted">
+          All transactions are encrypted and secure.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5>Fast Delivery</h5>
+        <p class="text-muted">
+          Quick processing and reliable shipping.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5>Easy Returns</h5>
+        <p class="text-muted">
+          Hassle-free returns within 7 days.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call To Action -->
+  <div class="text-center mb-5">
+    <h4>Ready to explore our products?</h4>
+    <a href="/products" class="btn btn-success mt-3">
+      Browse Products
+    </a>
+  </div>
+
+</div>
