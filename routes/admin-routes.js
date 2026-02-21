@@ -4,7 +4,6 @@ import * as cartDB from "../cartModule.js";
 import { Order, Product } from "../models/index.js";
 
 const router = express.Router();
-const isAdmin = true;
 
 router.get("/products", async (req, res) => {
   try {
