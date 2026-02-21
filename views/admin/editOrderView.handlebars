@@ -1,105 +1,150 @@
 <div class="container mt-4">
-
   <div class="card shadow">
-
     <div class="card-header bg-info text-white">
       <h4 class="mb-0">Edit Order</h4>
     </div>
 
     <div class="card-body">
 
-      <!-- Order Info -->
       <div class="mb-4">
         <p><strong>Order ID:</strong> {{order._id}}</p>
-        <p><strong>Customer:</strong> {{order.customer.name}} ({{order.customer.email}})</p>
-        <p><strong>Total Amount:</strong> ${{order.totalAmount}}</p>
+        <p><strong>Customer:</strong> {{order.customer.name}}</p>
+        <p><strong>Status:</strong> {{order.status}}</p>
         <p><strong>Placed:</strong> {{order.orderDate}}</p>
       </div>
 
-      <!-- Items -->
       <h5 class="mb-3">Order Items</h5>
 
-      <table class="table table-bordered">
+      <table class="table table-bordered align-middle">
         <thead class="table-light">
           <tr>
             <th>Product</th>
-            <th>Price at Purchase</th>
-            <th>Quantity</th>
+            <th>Price</th>
+            <th style="width:150px;">Quantity</th>
             <th>Subtotal</th>
+            {{#if (eq order.status "PLACED")}}
+              <th style="width:120px;">Delete</th>
+            {{/if}}
           </tr>
         </thead>
 
-       <tbody>
-  {{#each order.items}}
-    <tr>
-      <td>
-        {{this.product.name}}
-        <input type="hidden" name="items[{{@index}}][product]" value="{{this.product._id}}">
-        <input type="hidden" name="items[{{@index}}][priceAtPurchase]" value="{{this.priceAtPurchase}}">
-      </td>
+        <tbody>
+          {{#each order.items}}
+          <tr id="row-{{this.product._id}}">
+            <td>{{this.product.name}}</td>
 
-      <td>${{this.priceAtPurchase}}</td>
+            <td>${{this.priceAtPurchase}}</td>
 
-      <td>
-        <input 
-          type="number" 
-          name="items[{{@index}}][quantity]" 
-          value="{{this.quantity}}" 
-          min="1"
-          class="form-control"
-          {{#unless (eq ../order.status "PLACED")}}disabled{{/unless}}
-        >
-      </td>
+            <td>
+              <input
+                type="number"
+                min="1"
+                value="{{this.quantity}}"
+                class="form-control"
+                {{#if (eq ../order.status "PLACED")}}
+                  onchange="updateQuantity('{{../order._id}}','{{this.product._id}}', this.value, {{this.quantity}})"
+                {{else}}
+                  disabled
+                {{/if}}
+              >
+            </td>
 
-      <td>
-        ${{multiply this.priceAtPurchase this.quantity}}
-      </td>
-    </tr>
-  {{/each}}
-</tbody>
+            <td>
+              ${{multiply this.priceAtPurchase this.quantity}}
+            </td>
 
+            {{#if (eq ../order.status "PLACED")}}
+            <td class="text-center">
+              <button
+                class="btn btn-danger btn-sm"
+                onclick="deleteItem('{{../order._id}}','{{this.product._id}}', {{this.quantity}})">
+                Delete
+              </button>
+            </td>
+            {{/if}}
+          </tr>
+          {{/each}}
+        </tbody>
       </table>
 
-      <!-- Update Status -->
-      <form method="POST" action="/admin/orders/{{order._id}}">
-        
-        <div class="mb-3">
-          <label class="form-label"><strong>Order Status</strong></label>
+      <hr>
 
-          <select name="status" class="form-select">
+      <!-- Order Status -->
+      <div class="mb-3">
+        <label class="form-label"><strong>Order Status</strong></label>
 
-            <option value="PLACED"
-              {{#if (eq order.status "PLACED")}}selected{{/if}}>
-              PLACED
-            </option>          
+        <select class="form-select"
+                {{#if (eq order.status "PLACED")}}
+                  onchange="updateStatus('{{order._id}}', this.value)"
+                {{else}}
+                  disabled
+                {{/if}}>
 
-            <option value="COMPLETED"
-              {{#if (eq order.status "COMPLETED")}}selected{{/if}}>
-              DELIVERED
-            </option>
+          <option value="PLACED"
+            {{#if (eq order.status "PLACED")}}selected{{/if}}>
+            PLACED
+          </option>
 
-            <option value="CANCELLED"
-              {{#if (eq order.status "CANCELLED")}}selected{{/if}}>
-              CANCELLED
-            </option>
+          <option value="COMPLETED"
+            {{#if (eq order.status "COMPLETED")}}selected{{/if}}>
+            COMPLETED
+          </option>
 
-          </select>
-        </div>
+          <option value="CANCELLED"
+            {{#if (eq order.status "CANCELLED")}}selected{{/if}}>
+            CANCELLED
+          </option>
 
-        <div class="d-flex justify-content-between">
-          <a href="/admin/customers/{{order.customer._id}}/orders"
-             class="btn btn-secondary">
-            Back
-          </a>
+        </select>
+      </div>
 
-          <button type="submit" class="btn btn-success">
-            Update Order
-          </button>
-        </div>
-
-      </form>
+      <div class="d-flex justify-content-between">
+        <a href="/admin/customers/{{order.customer._id}}/orders"
+           class="btn btn-secondary">
+          Back
+        </a>
+      </div>
 
     </div>
   </div>
-
 </div>
+
+<script>
+    async function updateQuantity(orderId, productId, newQty, oldQty) {
+
+  const response = await fetch(`/admin/orders/${orderId}/items/${productId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      newQuantity: Number(newQty),
+      oldQuantity: Number(oldQty)
+    })
+  });
+
+  if (response.ok) location.reload();
+  else alert("Error updating quantity");
+}
+
+async function deleteItem(orderId, productId, qty) {
+
+  const response = await fetch(`/admin/orders/${orderId}/items/${productId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantity: Number(qty) })
+  });
+
+  if (response.ok) location.reload();
+  else alert("Error deleting item");
+}
+
+async function updateStatus(orderId, status) {
+
+  const response = await fetch(`/admin/orders/${orderId}/status`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status })
+  });
+
+  if (!response.ok) alert("Error updating status");
+}
+</script>

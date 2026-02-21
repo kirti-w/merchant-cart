@@ -74,7 +74,6 @@
     <a class="nav-link position-relative" href="/cart">
       <i class="bi bi-cart3 fs-5"></i>
       <span class="ms-1">My Cart</span>
-
                       {{#if cartCount}}
                         <span
                           class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -86,7 +85,7 @@
                   </li>
                 {{/if}}
                 <li class="nav-item">
-                  <a class="btn btn-danger btn-sm">
+                  <a class="btn btn-danger btn-sm" href="/logout">
                     Logout
                   </a>
                 </li>

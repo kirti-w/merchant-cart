@@ -30,6 +30,10 @@ const orderSchema = new Schema(
       enum: Object.values(ORDER_STATUS),
       default: ORDER_STATUS.PLACED,
     },
+    orderDate: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { versionKey: false },
 );

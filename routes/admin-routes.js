@@ -1,6 +1,8 @@
 import express from "express";
 import * as cartDB from "../cartModule.js";
 
+import { Order, Product } from "../models/index.js";
+
 const router = express.Router();
 const isAdmin = true;
 
@@ -93,96 +95,101 @@ router.get("/customers/:id/orders", async (req, res) => {
   });
 });
 
-// Edit order
+// Get request : Edit order
 router.get("/orders/:id/edit", async (req, res) => {
   const order = await cartDB.findOrderById(req.params.id);
 
   res.render("admin/editOrderView", { order });
 });
 
-/*
-router.post("/orders/:id/update-items", async (req, res) => {
+router.put("/orders/:orderId/items/:productId", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const { orderId, productId } = req.params;
+    const { newQuantity, oldQuantity } = req.body;
 
-    if (!order) return res.redirect("back");
+    const order = await Order.findById(orderId);
+    const product = await Product.findById(productId);
 
-    // 🚫 Prevent modification if fulfilled
-    const nonEditableStatuses = [
-      ORDER_STATUS.COMPLETED,
-      ORDER_STATUS.CANCELLED,
-    ];
-
-    if (nonEditableStatuses.includes(order.status)) {
-      return res.status(400).send("Order cannot be modified.");
+    if (!order || !product) {
+      return res.status(404).json({ message: "Order or Product not found" });
     }
 
-    // Example: updating quantities
-    const updatedItems = req.body.items;
-    // Expected structure:
-    // items[0][quantity] = 3
+    const item = order.items.find((i) => i.product.toString() === productId);
 
-    let newTotal = 0;
-
-    for (let i = 0; i < order.items.length; i++) {
-      const newQty = Number(updatedItems[i].quantity);
-
-      // restore old stock first
-      await Product.findByIdAndUpdate(order.items[i].product, {
-        $inc: { quantityInStock: order.items[i].quantity },
-      });
-
-      // deduct new stock
-      await Product.findByIdAndUpdate(order.items[i].product, {
-        $inc: { quantityInStock: -newQty },
-      });
-
-      order.items[i].quantity = newQty;
-
-      newTotal += newQty * order.items[i].priceAtPurchase;
+    if (!item) {
+      return res.status(404).json({ message: "Item not found in order" });
     }
 
-    order.totalAmount = newTotal;
+    const difference = newQuantity - oldQuantity;
+
+    // Adjust stock
+    if (difference > 0 && product.quantityInStock < difference) {
+      return res.status(400).json({ message: "Not enough stock" });
+    }
+
+    product.quantityInStock -= difference;
+    await product.save();
+
+    item.quantity = newQuantity;
+    await order.save();
+
+    res.json({ message: "Quantity updated" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/orders/:orderId/items/:productId", async (req, res) => {
+  try {
+    const { orderId, productId } = req.params;
+    const { quantity } = req.body;
+
+    const order = await Order.findById(orderId);
+    const product = await Product.findById(productId);
+
+    if (!order || !product) {
+      return res.status(404).json({ message: "Order or Product not found" });
+    }
+
+    // Restore stock
+    product.quantityInStock += quantity;
+    await product.save();
+
+    order.items = order.items.filter((i) => i.product.toString() !== productId);
 
     await order.save();
 
-    res.redirect("back");
-  } catch (error) {
-    console.error(error);
-    res.redirect("back");
+    res.json({ message: "Item deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-});*/
+});
 
-// Update order (example: status update)
-router.post("/orders/:id", async (req, res) => {
+router.put("/orders/:orderId/status", async (req, res) => {
   try {
-    const order = await cartDB.findOrderById(req.params.id);
+    const { orderId } = req.params;
+    const { status } = req.body;
 
-    if (order.status !== "PLACED") {
-      return res.redirect(
-        `/admin/customers/${order.customer}/orders?error=notAllowed`,
-      );
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
     }
 
-    const updatedItems = req.body.items;
+    if (status === "CANCELLED" && order.status !== "CANCELLED") {
+      for (const item of order.items) {
+        const product = await Product.findById(item.product);
+        product.quantityInStock += item.quantity;
+        await product.save();
+      }
+    }
 
-    // Recalculate total
-    let total = 0;
+    order.status = status;
+    await order.save();
 
-    updatedItems.forEach((item) => {
-      total += item.priceAtPurchase * item.quantity;
-    });
-
-    await cartDB.updateOrder(req.params.id, {
-      items: updatedItems,
-      totalAmount: total,
-      status: req.body.status,
-    });
-
-    res.redirect(`/admin/customers/${order.customer}/orders`);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Update failed.");
+    res.json({ message: "Status updated" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

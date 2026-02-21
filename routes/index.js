@@ -270,7 +270,6 @@ router.post(
     res.redirect("/orders");
   },
 );
-
 router.get("/orders", ensureAuthenticated, async (req, res) => {
   const orders = await cartDB.findOrdersByCustId(req.user.id);
   res.render("ordersView", { orders });
