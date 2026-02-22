@@ -27,15 +27,13 @@
       <!-- 🔝 Navbar -->
                   <ul class="navbar-nav me-auto">
 
-              <!-- Visible to ALL customers -->
-
               
-                <li class="nav-item">
-                  <a class="nav-link" href="/products">Products</a>
-                </li>
 
     {{#if user}}
 {{#if (eq user.role "customer")}}
+ <li class="nav-item">
+                  <a class="nav-link" href="/products">Products</a>
+                </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/orders">My Orders</a>
                 </li>

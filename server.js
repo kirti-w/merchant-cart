@@ -1,6 +1,5 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-
 import { validateUser } from "./userModule.js";
 import { ensureAuthenticated, ensureAuthorized } from "./middleware/auth.js";
 
@@ -93,72 +92,6 @@ passport.deserializeUser((obj, cb) => {
   cb(null, obj);
 });
 
-app.get("/login", function (req, res) {
-  res.render("login", {
-    user: req.user,
-    messages: req.session.messages,
-  });
-});
-
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
-
-    if (!user) {
-      return res.render("login", {
-        messages: info?.message || "Invalid username or password.",
-      });
-    }
-
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (user.role === "admin") {
-        return res.redirect("/admin/products");
-      } else {
-        return res.redirect("/products");
-      }
-    });
-  })(req, res, next);
-});
-
-// protected route middleware function
-/*
-export function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/login");
-}*/
-
-app.get("/account", ensureAuthenticated, function (req, res) {
-  res.render("account", { user: req.user });
-});
-
-// protected route middleware function
-/*
-export const ensureAuthorized = (requiredRole) => {
-  return (req, res, next) => {
-    if (req.isAuthenticated) {
-      const user = req.user;
-      if (user?.role === requiredRole) {
-        return next();
-      } else {
-        res.render("error", {
-          user: req.user,
-          message: "Insufficient access permissions",
-        });
-      }
-    } else {
-      res.redirect("/login");
-    }
-  };
-};
-*/
 // Routing
 import { router as routes } from "./routes/index.js";
 

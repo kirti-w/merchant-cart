@@ -5,7 +5,41 @@ const router = express.Router();
 import * as cartDB from "../cartModule.js";
 import * as userModule from "../userModule.js";
 import { Order, User } from "../models/index.js";
+import passport from "passport";
 import { ensureAuthenticated, ensureAuthorized } from "../middleware/auth.js";
+
+router.get("/login", function (req, res) {
+  res.render("login", {
+    user: req.user,
+    messages: req.session.messages,
+  });
+});
+
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      return res.render("login", {
+        messages: info?.message || "Invalid username or password.",
+      });
+    }
+
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (user.role === "admin") {
+        return res.redirect("/admin/products");
+      } else {
+        return res.redirect("/products");
+      }
+    });
+  })(req, res, next);
+});
 
 // GET request to the homepage
 router.get("/", function (req, res) {
@@ -253,16 +287,7 @@ router.post(
       priceAtPurchase: item.price,
     }));
 
-    /*
-    var totalAmount = orderItems.reduce(
-      (sum, item) => sum + item.quantity * item.priceAtPurchase,
-      0,
-    );
-
-    totalAmount = parseFloat(totalAmount.toFixed(2)); // Round to 2 decimals
-    */
-
-    await Order.create({
+    await cartDB.createOrder({
       customer: req.user.id,
       items: orderItems,
       orderDate: new Date(),

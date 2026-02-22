@@ -175,6 +175,7 @@ router.put("/orders/:orderId/status", async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
+    //If status is set to cancelled, restore stock for all items in the order
     if (status === "CANCELLED" && order.status !== "CANCELLED") {
       for (const item of order.items) {
         const product = await Product.findById(item.product);

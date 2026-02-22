@@ -116,3 +116,7 @@ export const findOrderById = async (id) => {
     .populate({ path: "items", select: "quantity priceAtPurchase" })
     .lean();
 };
+
+export const createOrder = async (data) => {
+  return Order.create(data);
+};
