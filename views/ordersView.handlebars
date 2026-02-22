@@ -52,10 +52,10 @@
           <!-- Order Summary -->
           <div class="d-flex justify-content-between">
             <div>
-              <strong>Placed:</strong> {{this.orderDate}}
+              <strong>Placed:</strong> {{formatDate this.orderDate}}
             </div>
             <div>
-              <strong>Total:</strong> ${{this.totalAmount}}
+              <strong>Total:</strong> ${{round this.totalAmount}}
             </div>
           </div>
 

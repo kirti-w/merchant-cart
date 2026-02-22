@@ -1,27 +1,27 @@
 [
   {
-    "_id": "u001",
+    "_id": "1",
     "name": "Alice",
     "username": "alice@shop.com",
     "password": "1234",
     "role": "admin"
   },
   {
-    "_id": "u002",
+    "_id": "2",
     "name": "Bob",
     "username": "bob@shop.com",
     "password": "2345",
     "role": "admin"
   },
   {
-    "_id": "u003",
+    "_id": "3",
     "name": "Charlie",
     "username": "charlie@example.com",
     "password": "3456",
     "role": "customer"
   },
   {
-    "_id": "u004",
+    "_id": "4",
     "name": "Jane Smith",
     "username": "jane@example.com",
     "password": "3456",

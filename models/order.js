@@ -20,11 +20,14 @@ const orderSchema = new Schema(
           ref: "Product",
           required: true,
         },
-        quantity: Number,
-        priceAtPurchase: Number,
+        quantity: { type: Number, required: true },
+        priceAtPurchase: { type: Number, required: true },
       },
     ],
-    totalAmount: Number,
+    totalAmount: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
       enum: Object.values(ORDER_STATUS),
@@ -37,5 +40,15 @@ const orderSchema = new Schema(
   },
   { versionKey: false },
 );
+
+// Auto-calculate before save
+orderSchema.pre("save", function (next) {
+  this.totalAmount = this.items.reduce(
+    (total, item) => total + item.quantity * item.priceAtPurchase,
+    0,
+  );
+  next();
+});
+
 export const Order = mongoose.model("Order", orderSchema);
 export { ORDER_STATUS };

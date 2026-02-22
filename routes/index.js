@@ -1,14 +1,13 @@
 import express from "express";
 
 const router = express.Router();
-
 // Use the cart module
 import * as cartDB from "../cartModule.js";
-import { Order } from "../models/index.js";
+import * as userModule from "../userModule.js";
+import { Order, User } from "../models/index.js";
 import { ensureAuthenticated, ensureAuthorized } from "../middleware/auth.js";
 
 // GET request to the homepage
-
 router.get("/", function (req, res) {
   res.render("homeView", { user: req.user });
 });
@@ -95,7 +94,8 @@ router.get(
       // If stock changed, adjust quantity
       const quantity = Math.min(item.quantity, product.quantityInStock);
 
-      const itemTotal = product.price * quantity;
+      var itemTotal = product.price * quantity;
+      itemTotal = parseFloat(itemTotal.toFixed(2)); // Round to 2 decimals
       total += itemTotal;
 
       updatedCart.push({
@@ -110,6 +110,8 @@ router.get(
 
     // Update session cart to reflect any adjustments
     req.session.cart = updatedCart;
+
+    total = parseFloat(total.toFixed(2)); // Round total to 2 decimals
 
     res.render("cartView", {
       cart: updatedCart,
@@ -251,16 +253,19 @@ router.post(
       priceAtPurchase: item.price,
     }));
 
-    const totalAmount = orderItems.reduce(
+    /*
+    var totalAmount = orderItems.reduce(
       (sum, item) => sum + item.quantity * item.priceAtPurchase,
       0,
     );
+
+    totalAmount = parseFloat(totalAmount.toFixed(2)); // Round to 2 decimals
+    */
 
     await Order.create({
       customer: req.user.id,
       items: orderItems,
       orderDate: new Date(),
-      totalAmount,
       status: "PLACED",
     });
 
@@ -274,5 +279,43 @@ router.get("/orders", ensureAuthenticated, async (req, res) => {
   const orders = await cartDB.findOrdersByCustId(req.user.id);
   res.render("ordersView", { orders });
 });
+
+// Show register page
+router.get("/register", (req, res) => {
+  res.render("registerView");
+});
+
+// Handle registration
+router.post("/register", async (req, res) => {
+  try {
+    const { name, username, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await userModule.findUser(username);
+    if (existingUser) {
+      return res.status(400).send("User already exists");
+    }
+
+    const nextId = await userModule.getNextID();
+
+    // Create new customer user
+    const newUser = new User({
+      _id: nextId.toString(),
+      name,
+      username,
+      password,
+      role: "customer",
+    });
+
+    await userModule.createUser(newUser);
+
+    res.redirect("/login"); // or auto-login
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error registering user");
+  }
+});
+
+export default router;
 
 export { router };

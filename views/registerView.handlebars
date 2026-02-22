@@ -1,0 +1,36 @@
+<!-- views/register.ejs -->
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h4>Register</h4>
+    </div>
+    <div class="card-body w-50 mx-auto">
+      <form action="/register" method="POST">
+
+        <div class="mb-3">
+          <label>Name</label>
+          <input type="text" name="name" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label>Email (Username)</label>
+          <input type="email" name="username" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary auto">
+          Register
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

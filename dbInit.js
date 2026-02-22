@@ -32,13 +32,4 @@ await productsCollection.deleteMany({});
 result = await productsCollection.insertMany(productData);
 console.log("Inserted Ids:", result.insertedIds);
 
-const json3Data = fs.readFileSync("data/orders.json");
-const orderData = JSON.parse(json3Data);
-console.log("Read", orderData.length, "orders");
-
-const ordersCollection = client.db("cart_kw").collection("orders");
-await ordersCollection.deleteMany({});
-result = await ordersCollection.insertMany(orderData);
-console.log("Inserted Ids:", result.insertedIds);
-
 await client.close();
