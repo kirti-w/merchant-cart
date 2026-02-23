@@ -8,6 +8,7 @@ const app = express();
 // setup handlebars view engine
 import { engine } from "express-handlebars";
 
+//View engine setup and use custom helpers
 app.engine(
   "handlebars",
   engine({
