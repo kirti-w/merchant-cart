@@ -1,21 +1,5 @@
-import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import { validateUser } from "./userModule.js";
+import passport from "./config/passport.js";
 import { ensureAuthenticated, ensureAuthorized } from "./middleware/auth.js";
-
-// configure passport strategy
-passport.use(
-  new LocalStrategy(function (username, password, cb) {
-    process.nextTick(async function () {
-      const user = await validateUser(username, password);
-      if (!user) {
-        return cb(null, false, { message: "Incorrect username or password." });
-      } else {
-        return cb(null, user);
-      }
-    });
-  }),
-);
 
 import express from "express";
 
@@ -33,16 +17,7 @@ app.engine(
       eq: (a, b) => a === b,
       multiply: (a, b) => a * b,
       formatDate: (date) => {
-        const d = new Date(date);
-
-        const month = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        const year = d.getFullYear();
-
-        const hours = String(d.getHours()).padStart(2, "0");
-        const minutes = String(d.getMinutes()).padStart(2, "0");
-
-        return `${month}-${day}-${year} ${hours}:${minutes}`;
+        return formatDate(date);
       },
       round: (value) => parseFloat(value.toFixed(2)),
     },
@@ -76,22 +51,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Serialize user information
-passport.serializeUser((user, cb) => {
-  console.log("Serialize", user);
-  cb(null, {
-    id: user._id,
-    name: user.name,
-    role: user.role,
-  });
-});
-
-// Deserialize user information
-passport.deserializeUser((obj, cb) => {
-  console.log("DeSerialize", obj);
-  cb(null, obj);
-});
-
 // Routing
 import { router as routes } from "./routes/index.js";
 
@@ -117,3 +76,15 @@ app.use(function (req, res) {
 app.listen(3000, function () {
   console.log("http://localhost:3000");
 });
+function formatDate(date) {
+  const d = new Date(date);
+
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
+
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+
+  return `${month}-${day}-${year} ${hours}:${minutes}`;
+}

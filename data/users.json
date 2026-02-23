@@ -6,24 +6,31 @@
     "password": "1234",
     "role": "admin"
   },
+    {
+    "_id": "1",
+    "name": "Alice",
+    "username": "alice@shop.com",
+    "password": "1234",
+    "role": "admin"
+  },
   {
     "_id": "2",
     "name": "Bob",
     "username": "bob@shop.com",
-    "password": "2345",
+    "password": "1234",
     "role": "admin"
   },
   {
     "_id": "3",
     "name": "Charlie",
-    "username": "charlie@example.com",
+    "username": "charlie@gmail.com",
     "password": "3456",
     "role": "customer"
   },
   {
     "_id": "4",
     "name": "Jane Smith",
-    "username": "jane@example.com",
+    "username": "jane@gmail.com",
     "password": "3456",
     "role": "customer"
   }

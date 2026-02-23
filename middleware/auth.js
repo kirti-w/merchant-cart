@@ -7,7 +7,8 @@ export function ensureAuthenticated(req, res, next) {
 
 export const ensureAuthorized = (requiredRole) => {
   return (req, res, next) => {
-    if (req.isAuthenticated()) {   // ✅ FIX: must CALL it
+    if (req.isAuthenticated()) {
+      // ✅ FIX: must CALL it
       if (req.user?.role === requiredRole) {
         return next();
       } else {
